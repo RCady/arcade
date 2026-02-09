@@ -8,8 +8,13 @@
     "build": "tsc && vite build",
     "preview": "vite preview"
   },
+  "main": "./dist/arcade.umd.cjs",
+  "module": "./dist/arcade.js",
   "exports": {
-    ".": "./src/index.ts"
+    ".": {
+      "import": "./dist/arcade.js",
+      "require": "./dist/arcade.umd.cjs"
+    }
   },
   "devDependencies": {
     "typescript": "~5.9.3",
