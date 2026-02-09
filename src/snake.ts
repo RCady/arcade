@@ -17,8 +17,8 @@ class Snake extends Game {
     private static readonly HEIGHT = 500;
     private static readonly PLAYER_SIZE = 20;
 
-    constructor(canvas: HTMLCanvasElement | null, snake: Point[], food: Point, startingDir: Direction, enableDebugging?: boolean) {
-        super(canvas, enableDebugging);
+    constructor(arcadeEl: HTMLDivElement | null, snake: Point[], food: Point, startingDir: Direction, enableDebugging?: boolean) {
+        super(arcadeEl, enableDebugging);
 
         this.snake = snake;
         this.food = food;

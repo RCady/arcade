@@ -1,17 +1,18 @@
 class r {
+  element;
   canvas;
   ctx;
   intervalId = null;
   animationFrameId = null;
   enableDebugging;
-  constructor(t, s) {
+  constructor(t, e) {
     if (t === null)
-      throw new Error("Canvas element not found");
-    this.canvas = t;
-    let e = t.getContext("2d");
-    if (e == null)
+      throw new Error("Arcade element not found");
+    this.element = t, this.canvas = this.createCanvas(), this.element.appendChild(this.canvas), /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) && this.createControls();
+    let n = this.canvas.getContext("2d");
+    if (n == null)
       throw new Error("Could not get canvas context");
-    this.ctx = e, this.enableDebugging = s;
+    this.ctx = n, this.enableDebugging = e;
   }
   init() {
     document.addEventListener("keydown", (t) => {
@@ -31,6 +32,22 @@ class r {
   debug(t) {
     this.enableDebugging && console.log(t);
   }
+  createCanvas() {
+    let t = document.createElement("canvas");
+    return t.width = 500, t.height = 500, t.style.width = "100%", t.style.height = "auto", t.style.maxWidth = "500px", t.style.aspectRatio = "1 / 1", t.style.display = "block", t;
+  }
+  createControls() {
+    const t = document.createElement("div");
+    t.id = "controls", t.style.padding = "10px", t.style.display = "grid", t.style.gridTemplateColumns = "repeat(3, auto)", t.style.gap = "5px", t.style.width = "fit-content", t.style.margin = "0 auto";
+    const e = document.createElement("button");
+    e.type = "button", e.style.gridColumn = "2", e.style.gridRow = "1", e.textContent = "↑", e.onclick = () => document.dispatchEvent(new KeyboardEvent("keydown", { key: "ArrowUp" }));
+    const n = document.createElement("button");
+    n.type = "button", n.style.gridColumn = "2", n.style.gridRow = "3", n.textContent = "↓", n.onclick = () => document.dispatchEvent(new KeyboardEvent("keydown", { key: "ArrowDown" }));
+    const s = document.createElement("button");
+    s.type = "button", s.style.gridColumn = "1", s.style.gridRow = "2", s.textContent = "←", s.onclick = () => document.dispatchEvent(new KeyboardEvent("keydown", { key: "ArrowLeft" }));
+    const o = document.createElement("button");
+    o.type = "button", o.style.gridColumn = "3", o.style.gridRow = "2", o.textContent = "→", o.onclick = () => document.dispatchEvent(new KeyboardEvent("keydown", { key: "ArrowRight" })), t.appendChild(e), t.appendChild(n), t.appendChild(s), t.appendChild(o), this.element.appendChild(t);
+  }
 }
 class i extends r {
   dirX;
@@ -40,8 +57,8 @@ class i extends r {
   static WIDTH = 500;
   static HEIGHT = 500;
   static PLAYER_SIZE = 20;
-  constructor(t, s, e, h, o) {
-    super(t, o), this.snake = s, this.food = e, this.dirX = h === "left" ? -1 : h === "right" ? 1 : 0, this.dirY = h === "up" ? -1 : h === "down" ? 1 : 0;
+  constructor(t, e, n, s, o) {
+    super(t, o), this.snake = e, this.food = n, this.dirX = s === "left" ? -1 : s === "right" ? 1 : 0, this.dirY = s === "up" ? -1 : s === "down" ? 1 : 0;
   }
   tick() {
     if (this.updatePosition(), this.checkCollisions(this.snake)) {
@@ -57,14 +74,14 @@ class i extends r {
     this.ctx.beginPath(), this.ctx.rect(this.food.x, this.food.y, i.PLAYER_SIZE, i.PLAYER_SIZE), this.ctx.fillStyle = "#FF007F", this.ctx.fill(), this.ctx.closePath();
   }
   onKeyDown(t) {
-    const s = this.keyToDirection(t);
-    s !== null && (s === "up" && this.dirY !== 1 ? (this.dirX = 0, this.dirY = -1) : s === "down" && this.dirY !== -1 ? (this.dirX = 0, this.dirY = 1) : s === "left" && this.dirX !== 1 ? (this.dirX = -1, this.dirY = 0) : s === "right" && this.dirX !== -1 && (this.dirX = 1, this.dirY = 0));
+    const e = this.keyToDirection(t);
+    e !== null && (e === "up" && this.dirY !== 1 ? (this.dirX = 0, this.dirY = -1) : e === "down" && this.dirY !== -1 ? (this.dirX = 0, this.dirY = 1) : e === "left" && this.dirX !== 1 ? (this.dirX = -1, this.dirY = 0) : e === "right" && this.dirX !== -1 && (this.dirX = 1, this.dirY = 0));
   }
   checkCollisions(t) {
     if (t[0].x < 0 || t[0].x >= i.WIDTH || t[0].y < 0 || t[0].y >= i.HEIGHT)
       return this.debug("collision with edges"), !0;
-    for (let s of t.slice(1))
-      if (t[0].x === s.x && t[0].y === s.y)
+    for (let e of t.slice(1))
+      if (t[0].x === e.x && t[0].y === e.y)
         return this.debug("collision with body"), !0;
     return !1;
   }
@@ -77,8 +94,8 @@ class i extends r {
       y: this.snake[0].y + this.dirY * i.PLAYER_SIZE
     };
   }
-  checkEatenFood(t, s) {
-    return t[0].x === s.x && t[0].y === s.y;
+  checkEatenFood(t, e) {
+    return t[0].x === e.x && t[0].y === e.y;
   }
   addSegment() {
     this.snake.push({
