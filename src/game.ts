@@ -87,6 +87,7 @@ abstract class Game {
         canvas.style.maxWidth = '500px';
         canvas.style.aspectRatio = '1 / 1';
         canvas.style.display = 'block';
+        canvas.style.backgroundColor = '#000000';
 
         return canvas;
     }

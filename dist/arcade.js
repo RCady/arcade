@@ -34,7 +34,7 @@ class r {
   }
   createCanvas() {
     let t = document.createElement("canvas");
-    return t.width = 500, t.height = 500, t.style.width = "100%", t.style.height = "auto", t.style.maxWidth = "500px", t.style.aspectRatio = "1 / 1", t.style.display = "block", t;
+    return t.width = 500, t.height = 500, t.style.width = "100%", t.style.height = "auto", t.style.maxWidth = "500px", t.style.aspectRatio = "1 / 1", t.style.display = "block", t.style.backgroundColor = "#000000", t;
   }
   createControls() {
     const t = document.createElement("div");
