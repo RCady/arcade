@@ -106,6 +106,9 @@ abstract class Game {
         upButton.type = 'button';
         upButton.style.gridColumn = '2';
         upButton.style.gridRow = '1';
+        upButton.style.padding = '20px 30px';
+        upButton.style.borderRadius = '5px';
+        upButton.style.border = '0';
         upButton.textContent = '↑';
         upButton.onclick = () => document.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowUp' }));
 
@@ -113,6 +116,9 @@ abstract class Game {
         downButton.type = 'button';
         downButton.style.gridColumn = '2';
         downButton.style.gridRow = '3';
+        downButton.style.padding = '20px 30px';
+        downButton.style.borderRadius = '5px';
+        downButton.style.border = '0';
         downButton.textContent = '↓';
         downButton.onclick = () => document.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown' }));
 
@@ -120,6 +126,9 @@ abstract class Game {
         leftButton.type = 'button';
         leftButton.style.gridColumn = '1';
         leftButton.style.gridRow = '2';
+        leftButton.style.padding = '20px 30px';
+        leftButton.style.borderRadius = '5px';
+        leftButton.style.border = '0';
         leftButton.textContent = '←';
         leftButton.onclick = () => document.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowLeft' }));
 
@@ -127,6 +136,9 @@ abstract class Game {
         rightButton.type = 'button';
         rightButton.style.gridColumn = '3';
         rightButton.style.gridRow = '2';
+        rightButton.style.padding = '20px 30px';
+        rightButton.style.borderRadius = '5px';
+        rightButton.style.border = '0';
         rightButton.textContent = '→';
         rightButton.onclick = () => document.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight' }));
 

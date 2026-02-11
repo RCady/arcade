@@ -9,10 +9,10 @@ class r {
     if (t === null)
       throw new Error("Arcade element not found");
     this.element = t, this.canvas = this.createCanvas(), this.element.appendChild(this.canvas), /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) && this.createControls();
-    let n = this.canvas.getContext("2d");
-    if (n == null)
+    let s = this.canvas.getContext("2d");
+    if (s == null)
       throw new Error("Could not get canvas context");
-    this.ctx = n, this.enableDebugging = e;
+    this.ctx = s, this.enableDebugging = e;
   }
   init() {
     document.addEventListener("keydown", (t) => {
@@ -40,13 +40,13 @@ class r {
     const t = document.createElement("div");
     t.id = "controls", t.style.padding = "10px", t.style.display = "grid", t.style.gridTemplateColumns = "repeat(3, auto)", t.style.gap = "5px", t.style.width = "fit-content", t.style.margin = "0 auto";
     const e = document.createElement("button");
-    e.type = "button", e.style.gridColumn = "2", e.style.gridRow = "1", e.textContent = "↑", e.onclick = () => document.dispatchEvent(new KeyboardEvent("keydown", { key: "ArrowUp" }));
-    const n = document.createElement("button");
-    n.type = "button", n.style.gridColumn = "2", n.style.gridRow = "3", n.textContent = "↓", n.onclick = () => document.dispatchEvent(new KeyboardEvent("keydown", { key: "ArrowDown" }));
+    e.type = "button", e.style.gridColumn = "2", e.style.gridRow = "1", e.style.padding = "20px 30px", e.style.borderRadius = "5px", e.style.border = "0", e.textContent = "↑", e.onclick = () => document.dispatchEvent(new KeyboardEvent("keydown", { key: "ArrowUp" }));
     const s = document.createElement("button");
-    s.type = "button", s.style.gridColumn = "1", s.style.gridRow = "2", s.textContent = "←", s.onclick = () => document.dispatchEvent(new KeyboardEvent("keydown", { key: "ArrowLeft" }));
+    s.type = "button", s.style.gridColumn = "2", s.style.gridRow = "3", s.style.padding = "20px 30px", s.style.borderRadius = "5px", s.style.border = "0", s.textContent = "↓", s.onclick = () => document.dispatchEvent(new KeyboardEvent("keydown", { key: "ArrowDown" }));
+    const n = document.createElement("button");
+    n.type = "button", n.style.gridColumn = "1", n.style.gridRow = "2", n.style.padding = "20px 30px", n.style.borderRadius = "5px", n.style.border = "0", n.textContent = "←", n.onclick = () => document.dispatchEvent(new KeyboardEvent("keydown", { key: "ArrowLeft" }));
     const o = document.createElement("button");
-    o.type = "button", o.style.gridColumn = "3", o.style.gridRow = "2", o.textContent = "→", o.onclick = () => document.dispatchEvent(new KeyboardEvent("keydown", { key: "ArrowRight" })), t.appendChild(e), t.appendChild(n), t.appendChild(s), t.appendChild(o), this.element.appendChild(t);
+    o.type = "button", o.style.gridColumn = "3", o.style.gridRow = "2", o.style.padding = "20px 30px", o.style.borderRadius = "5px", o.style.border = "0", o.textContent = "→", o.onclick = () => document.dispatchEvent(new KeyboardEvent("keydown", { key: "ArrowRight" })), t.appendChild(e), t.appendChild(s), t.appendChild(n), t.appendChild(o), this.element.appendChild(t);
   }
 }
 class i extends r {
@@ -57,8 +57,8 @@ class i extends r {
   static WIDTH = 500;
   static HEIGHT = 500;
   static PLAYER_SIZE = 20;
-  constructor(t, e, n, s, o) {
-    super(t, o), this.snake = e, this.food = n, this.dirX = s === "left" ? -1 : s === "right" ? 1 : 0, this.dirY = s === "up" ? -1 : s === "down" ? 1 : 0;
+  constructor(t, e, s, n, o) {
+    super(t, o), this.snake = e, this.food = s, this.dirX = n === "left" ? -1 : n === "right" ? 1 : 0, this.dirY = n === "up" ? -1 : n === "down" ? 1 : 0;
   }
   tick() {
     if (this.updatePosition(), this.checkCollisions(this.snake)) {
