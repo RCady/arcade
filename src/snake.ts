@@ -8,26 +8,23 @@ interface Point {
 type Direction = 'up' | 'down' | 'left' | 'right';
 
 class Snake extends Game {
-    private dirX: number;
-    private dirY: number;
-    private readonly food: Point;
-    private readonly snake: Point[];
+    private dirX: number = 0;
+    private dirY: number = -1;
+    private prevDirX: number = 0;
+    private prevDirY: number = -1;
 
-    private static readonly WIDTH = 500;
-    private static readonly HEIGHT = 500;
+    private readonly food: Point = {x: 240, y: 100};
+    private readonly snake: Point[] = [{x: 240, y: 240}];
+
     private static readonly PLAYER_SIZE = 20;
 
-    constructor(arcadeEl: HTMLDivElement | null, snake: Point[], food: Point, startingDir: Direction, enableDebugging?: boolean) {
-        super(arcadeEl, enableDebugging);
-
-        this.snake = snake;
-        this.food = food;
-
-        this.dirX = startingDir === 'left' ? -1 : startingDir === 'right' ? 1 : 0;
-        this.dirY = startingDir === 'up' ? -1 : startingDir === 'down' ? 1 : 0;
-    }
+    private isStarted: boolean = false;
 
     protected tick(): void {
+        if (!this.isStarted) {
+            return;
+        }
+
         this.updatePosition();
         let hasCollided: boolean = this.checkCollisions(this.snake);
 
@@ -47,50 +44,44 @@ class Snake extends Game {
     protected draw(): void {
         this.debug('drawing game');
 
-        this.ctx?.clearRect(0, 0, Snake.WIDTH, Snake.HEIGHT);
-
-        // Draw snake
-        for (let i = 0; i < this.snake.length; i++) {
-            this.ctx.beginPath();
-            this.ctx.rect(this.snake[i].x, this.snake[i].y, Snake.PLAYER_SIZE, Snake.PLAYER_SIZE);
-            this.ctx.fillStyle = 'white';
-            this.ctx.fill();
-            this.ctx.closePath();
+        if (!this.isStarted) {
+            this.drawWelcome();
+            return;
         }
 
-        // Draw food
-        this.ctx.beginPath();
-        this.ctx.rect(this.food.x, this.food.y, Snake.PLAYER_SIZE, Snake.PLAYER_SIZE);
-        this.ctx.fillStyle = '#FF007F';
-        this.ctx.fill();
-        this.ctx.closePath();
+        this.drawGame();
     }
 
     protected onKeyDown(key: string): void {
         const direction = this.keyToDirection(key);
+
+        if ((key === ' ' || direction === 'up') && !this.isStarted) {
+            this.isStarted = true;
+            return;
+        }
 
         if (direction === null) {
             return;
         }
 
         // Prevent 180-degree turns
-        if (direction === 'up' && this.dirY !== 1) {
+        if (direction === 'up' && this.dirY !== 1 && this.prevDirY !== 1) {
             this.dirX = 0;
             this.dirY = -1;
-        } else if (direction === 'down' && this.dirY !== -1) {
+        } else if (direction === 'down' && this.dirY !== -1 && this.prevDirY !== -1) {
             this.dirX = 0;
             this.dirY = 1;
-        } else if (direction === 'left' && this.dirX !== 1) {
+        } else if (direction === 'left' && this.dirX !== 1 && this.prevDirX !== 1) {
             this.dirX = -1;
             this.dirY = 0;
-        } else if (direction === 'right' && this.dirX !== -1) {
+        } else if (direction === 'right' && this.dirX !== -1 && this.prevDirX !== -1) {
             this.dirX = 1;
             this.dirY = 0;
         }
     }
 
     private checkCollisions(snake: Point[]): boolean {
-        if (snake[0].x < 0 || snake[0].x >= Snake.WIDTH || snake[0].y < 0 || snake[0].y >= Snake.HEIGHT) {
+        if (snake[0].x < 0 || snake[0].x >= this.arcade.WIDTH || snake[0].y < 0 || snake[0].y >= this.arcade.HEIGHT) {
             this.debug('collision with edges');
             return true;
         }
@@ -116,6 +107,9 @@ class Snake extends Game {
             x: this.snake[0].x + this.dirX * Snake.PLAYER_SIZE,
             y: this.snake[0].y + this.dirY * Snake.PLAYER_SIZE
         }
+
+        this.prevDirX = this.dirX;
+        this.prevDirY = this.dirY;
     }
 
     private checkEatenFood(snake: Point[], food: Point): boolean {
@@ -130,8 +124,8 @@ class Snake extends Game {
     }
 
     private spawnFood(): void {
-        this.food.x = Math.floor(Math.random() * (Snake.WIDTH / Snake.PLAYER_SIZE)) * Snake.PLAYER_SIZE;
-        this.food.y = Math.floor(Math.random() * (Snake.HEIGHT / Snake.PLAYER_SIZE)) * Snake.PLAYER_SIZE;
+        this.food.x = Math.floor(Math.random() * (this.arcade.WIDTH / Snake.PLAYER_SIZE)) * Snake.PLAYER_SIZE;
+        this.food.y = Math.floor(Math.random() * (this.arcade.HEIGHT / Snake.PLAYER_SIZE)) * Snake.PLAYER_SIZE;
     }
 
     private keyToDirection(key: string): Direction | null {
@@ -146,6 +140,43 @@ class Snake extends Game {
             case 'ArrowRight': return 'right';
             default: return null
         }
+    }
+
+    private drawWelcome(): void {
+        this.arcade.ctx?.clearRect(0, 0, this.arcade.WIDTH, this.arcade.HEIGHT);
+
+        this.arcade.ctx.font = '32px Arial';
+        this.arcade.ctx.fillStyle = '#FFFFFF';
+
+        const text = 'Press space or up to start';
+        const textMetrics = this.arcade.ctx.measureText(text);
+
+        const width = textMetrics.width;
+        const height = textMetrics.fontBoundingBoxAscent + textMetrics.fontBoundingBoxDescent;
+
+        this.arcade.ctx.fillText(text, (this.arcade.WIDTH - width) / 2, (this.arcade.HEIGHT - (height / 2)) / 2);
+        this.arcade.ctx.font = '16px Arial';
+        this.arcade.ctx.fillText('Use the arrow keys or w, a, s, d', (this.arcade.WIDTH - this.arcade.ctx.measureText('Use the arrow keys or w, a, s, d').width) / 2, (this.arcade.HEIGHT - (height / 2)) / 2 + height)
+    }
+
+    private drawGame(): void {
+        this.arcade.ctx?.clearRect(0, 0, this.arcade.WIDTH, this.arcade.HEIGHT);
+
+        // Draw snake
+        for (let i = 0; i < this.snake.length; i++) {
+            this.arcade.ctx.beginPath();
+            this.arcade.ctx.rect(this.snake[i].x, this.snake[i].y, Snake.PLAYER_SIZE, Snake.PLAYER_SIZE);
+            this.arcade.ctx.fillStyle = 'white';
+            this.arcade.ctx.fill();
+            this.arcade.ctx.closePath();
+        }
+
+        // Draw food
+        this.arcade.ctx.beginPath();
+        this.arcade.ctx.rect(this.food.x, this.food.y, Snake.PLAYER_SIZE, Snake.PLAYER_SIZE);
+        this.arcade.ctx.fillStyle = '#FF007F';
+        this.arcade.ctx.fill();
+        this.arcade.ctx.closePath();
     }
 }
 
